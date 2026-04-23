@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calisthenics — Master Your Body</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ink: { 50:'#ede8db',100:'#c8c2b4',200:'#a39e92',300:'#6b675e',400:'#2d2a25',500:'#1a1816',600:'#12110f',700:'#080807' },
+                        vermillion: { DEFAULT:'#bf3632', light:'#d94f4b', dark:'#8c2420', glow:'rgba(191,54,50,0.25)' },
+                        gold: { DEFAULT:'#c4a24e', light:'#d4b86a', dark:'#9a7d3a' }
+                    },
+                    fontFamily: {
+                        display: ['"Cinzel Decorative"','serif'],
+                        body: ['"Cormorant Garamond"','serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg:#080807;--bg-raised:#12110f;--bg-card:#1a1816;
+            --fg:#ede8db;--fg-dim:#a39e92;--fg-muted:#6b675e;
+            --accent:#bf3632;--accent-light:#d94f4b;
+            --gold:#c4a24e;--border:#2d2a25;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;background:var(--bg);color:var(--fg);}
+        body{font-family:'Cormorant Garamond',serif;background:var(--bg);overflow-x:hidden;}
+        ::-webkit-scrollbar{width:6px;}
+        ::-webkit-scrollbar-track{background:var(--bg);}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+        ::-webkit-scrollbar-thumb:hover{background:var(--fg-muted);}
+        ::selection{background:var(--accent);color:var(--fg);}
+
+        /* Navigation */
+        .nav-glass{background:rgba(8,8,7,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(45,42,37,0.5);}
+        .nav-link{position:relative;letter-spacing:0.15em;text-transform:uppercase;font-size:0.7rem;}
+        .nav-link::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--accent);transition:width 0.4s cubic-bezier(0.16,1,0.3,1);}
+        .nav-link:hover::after,.nav-link.active::after{width:100%;}
+        .nav-link:hover{color:var(--accent-light);}
+
+        /* Hero — SINGLE LINE fix */
+        .hero-section{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;}
+        .hero-ink-wash{position:absolute;inset:0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 30%, rgba(237,232,219,0.03) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 80% 70%, rgba(191,54,50,0.04) 0%, transparent 50%),
+                radial-gradient(ellipse 100% 100% at 50% 50%, rgba(18,17,15,1) 0%, rgba(8,8,7,1) 100%);
+        }
+        .hero-inner{
+            width:100%;max-width:1400px;margin:0 auto;padding:0 clamp(24px,4vw,48px);
+            display:flex;align-items:center;justify-content:space-between;gap:40px;
+        }
+        .hero-text-wrap{
+            flex:1;min-width:0;
+            display:flex;flex-direction:column;align-items:flex-start;
+        }
+        .hero-text{
+            font-family:'Cinzel Decorative',serif;
+            font-weight:900;
+            /* Fits "CALISTHENICS" on one line: use vw so it scales with screen */
+            font-size:clamp(2.4rem,7.2vw,9rem);
+            line-height:1;
+            letter-spacing:0.04em;
+            color:var(--fg);
+            white-space:nowrap;
+            text-shadow:0 0 80px rgba(237,232,219,0.08),0 2px 0 rgba(0,0,0,0.5);
+        }
+        .hero-letter{display:inline-block;opacity:0;transform:translateY(30px) rotate(-1deg);animation:brushReveal 0.7s cubic-bezier(0.16,1,0.3,1) forwards;}
+        @keyframes brushReveal{
+            0%{opacity:0;transform:translateY(30px) rotate(-1deg);filter:blur(4px);}
+            60%{opacity:1;filter:blur(0);}
+            100%{opacity:1;transform:translateY(0) rotate(0deg);filter:blur(0);}
+        }
+        .hero-subtitle{
+            font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;
+            font-size:clamp(1rem,2vw,1.6rem);color:var(--fg-dim);letter-spacing:0.08em;
+            margin-top:16px;
+            opacity:0;animation:fadeUp 1s 1.8s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+        /* Hanko */
+        .hanko{
+            width:80px;height:80px;border:2.5px solid var(--accent);border-radius:6px;
+            display:flex;align-items:center;justify-content:center;flex-direction:column;
+            transform:rotate(-10deg);flex-shrink:0;
+            opacity:0;animation:stampIn 0.4s 2.2s cubic-bezier(0.34,1.56,0.64,1) forwards;
+            box-shadow:inset 0 0 0 1px rgba(191,54,50,0.15),0 0 30px rgba(191,54,50,0.1);
+            position:relative;
+        }
+        .hanko::before{content:'';position:absolute;inset:3px;border:0.5px solid rgba(191,54,50,0.3);border-radius:3px;}
+        @keyframes stampIn{
+            0%{opacity:0;transform:rotate(-10deg) scale(2);}
+            70%{opacity:1;transform:rotate(-10deg) scale(0.95);}
+            100%{opacity:1;transform:rotate(-10deg) scale(1);}
+        }
+
+        /* Vertical Text */
+        .vertical-text{
+            writing-mode:vertical-rl;text-orientation:mixed;
+            letter-spacing:0.5em;font-size:0.65rem;text-transform:uppercase;
+            color:var(--fg-muted);font-weight:500;
+            opacity:0;animation:fadeUp 1s 2.5s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+
+        /* CTA Button */
+        .cta-btn{
+            position:relative;display:inline-flex;align-items:center;gap:12px;
+            padding:18px 40px;background:var(--accent);color:var(--fg);
+            font-family:'Cinzel Decorative',serif;font-size:0.75rem;font-weight:700;
+            letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;
+            overflow:hidden;transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
+            opacity:0;animation:fadeUp 1s 2.8s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+        .cta-btn::before{content:'';position:absolute;inset:0;background:var(--accent-light);transform:translateX(-101%);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);}
+        .cta-btn:hover::before{transform:translateX(0);}
+        .cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(191,54,50,0.4);}
+        .cta-btn span,.cta-btn i{position:relative;z-index:1;}
+
+        /* Scroll Indicator */
+        .scroll-indicator{opacity:0;animation:fadeUp 1s 3.2s cubic-bezier(0.16,1,0.3,1) forwards;}
+        .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--fg-muted),transparent);animation:scrollPulse 2s ease-in-out infinite;}
+        @keyframes scrollPulse{0%,100%{opacity:0.3;transform:scaleY(0.6);}50%{opacity:1;transform:scaleY(1);}}
+
+        /* Section Styles */
+        .section-label{font-family:'Cinzel Decorative',serif;font-size:0.65rem;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);}
+        .section-title{font-family:'Cinzel Decorative',serif;font-weight:700;font-size:clamp(1.8rem,4vw,3.2rem);line-height:1.15;color:var(--fg);}
+        .section-body{font-family:'Cormorant Garamond',serif;font-size:1.2rem;line-height:1.85;color:var(--fg-dim);font-weight:400;}
+        .brush-divider{height:1px;background:linear-gradient(to right,transparent,var(--border),var(--accent),var(--border),transparent);margin:0 auto;max-width:600px;}
+
+        /* Reveal */
+        .reveal{opacity:0;transform:translateY(40px);transition:all 0.9s cubic-bezier(0.16,1,0.3,1);}
+        .reveal.revealed{opacity:1;transform:translateY(0);}
+        .reveal-delay-1{transition-delay:0.1s;}.reveal-delay-2{transition-delay:0.2s;}.reveal-delay-3{transition-delay:0.3s;}.reveal-delay-4{transition-delay:0.4s;}.reveal-delay-5{transition-delay:0.5s;}
+
+        /* Card */
+        .card{background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:32px;transition:all 0.4s cubic-bezier(0.16,1,0.3,1);position:relative;overflow:hidden;}
+        .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(196,162,78,0.3),transparent);opacity:0;transition:opacity 0.4s;}
+        .card:hover{border-color:rgba(45,42,37,0.8);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.3);}
+        .card:hover::before{opacity:1;}
+
+        .benefit-icon{width:56px;height:56px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:50%;color:var(--accent);font-size:1.2rem;transition:all 0.4s;flex-shrink:0;}
+        .card:hover .benefit-icon{border-color:var(--accent);background:rgba(191,54,50,0.08);box-shadow:0 0 20px rgba(191,54,50,0.15);}
+
+        /* Tabs */
+        .tab-btn{padding:12px 20px;font-family:'Cinzel Decorative',serif;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--fg-muted);border:1px solid transparent;background:transparent;cursor:pointer;transition:all 0.3s;border-radius:2px;white-space:nowrap;}
+        .tab-btn:hover{color:var(--fg-dim);border-color:var(--border);}
+        .tab-btn.active{color:var(--accent);border-color:var(--accent);background:rgba(191,54,50,0.06);}
+        .tab-content{display:none;animation:tabFade 0.5s ease;}
+        .tab-content.active{display:block;}
+        @keyframes tabFade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+        .exercise-card{background:var(--bg-raised);border:1px solid var(--border);border-radius:4px;padding:24px;transition:all 0.3s;}
+        .exercise-card:hover{border-color:rgba(191,54,50,0.3);background:var(--bg-card);}
+        .difficulty-dot{width:6px;height:6px;border-radius:50%;display:inline-block;}
+        .difficulty-dot.filled{background:var(--accent);}.difficulty-dot.empty{background:var(--border);}
+
+        /* Progression */
+        .progression-step{position:relative;padding-left:48px;}
+        .progression-step::before{content:'';position:absolute;left:15px;top:36px;bottom:-32px;width:1px;background:linear-gradient(to bottom,var(--accent),var(--border));}
+        .progression-step:last-child::before{display:none;}
+        .step-number{position:absolute;left:0;top:0;width:32px;height:32px;border:1px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cinzel Decorative',serif;font-size:0.7rem;color:var(--accent);background:var(--bg);}
+
+        /* FAQ */
+        .faq-item{border-bottom:1px solid var(--border);}
+        .faq-question{width:100%;padding:24px 0;background:none;border:none;font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:var(--fg);cursor:pointer;display:flex;justify-content:space-between;align-items:center;text-align:left;transition:color 0.3s;}
+        .faq-question:hover{color:var(--accent-light);}
+        .faq-question i{transition:transform 0.4s;color:var(--fg-muted);font-size:0.8rem;}
+        .faq-question.open i{transform:rotate(180deg);color:var(--accent);}
+        .faq-answer{max-height:0;overflow:hidden;transition:max-height 0.5s cubic-bezier(0.16,1,0.3,1);}
+        .faq-answer-inner{padding-bottom:24px;color:var(--fg-dim);font-size:1.15rem;line-height:1.8;}
+
+        /* Modal */
+        .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity 0.3s;}
+        .modal-backdrop.open{display:flex;opacity:1;}
+        .modal-card{background:var(--bg-raised);border:1px solid var(--border);border-radius:6px;max-width:800px;width:100%;max-height:85vh;overflow-y:auto;transform:scale(0.95) translateY(20px);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);}
+        .modal-backdrop.open .modal-card{transform:scale(1) translateY(0);}
+        .modal-card::-webkit-scrollbar{width:4px;}
+        .modal-card::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+        .workout-table{width:100%;border-collapse:collapse;font-size:0.95rem;}
+        .workout-table th{text-align:left;padding:12px 16px;border-bottom:2px solid var(--accent);font-family:'Cinzel Decorative',serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);}
+        .workout-table td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--fg-dim);}
+        .workout-table tr:hover td{background:rgba(191,54,50,0.03);color:var(--fg);}
+
+        .toast{position:fixed;bottom:30px;right:30px;background:var(--bg-card);border:1px solid var(--accent);border-radius:4px;padding:16px 24px;color:var(--fg);font-size:1rem;z-index:2000;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.16,1,0.3,1);}
+        .toast.show{transform:translateY(0);opacity:1;}
+
+        #inkCanvas{position:absolute;inset:0;pointer-events:none;}
+
+        /* Responsive — stack hero on small screens */
+        @media(max-width:768px){
+            .hero-inner{flex-direction:column;align-items:center;text-align:center;gap:24px;padding-top:120px;}
+            .hero-text-wrap{align-items:center;}
+            .hero-text{font-size:clamp(2rem,10vw,4rem);}
+            .hero-subtitle{font-size:clamp(0.95rem,3.5vw,1.3rem);}
+            .vertical-text{display:none;}
+            .hanko{width:64px;height:64px;}
+            .cta-btn{padding:14px 28px;font-size:0.65rem;}
+            .tab-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+            .tab-scroll::-webkit-scrollbar{display:none;}
+        }
+
+        @media(prefers-reduced-motion:reduce){
+            .hero-letter,.hero-subtitle,.hanko,.vertical-text,.cta-btn,.scroll-indicator{animation:none!important;opacity:1!important;transform:none!important;}
+            .reveal{transition:none!important;opacity:1!important;transform:none!important;}
+            .scroll-line{animation:none!important;}
+        }
+
+        @media print{
+            body *{visibility:hidden;}
+            #workoutModal,#workoutModal *{visibility:visible;}
+            #workoutModal{position:absolute;left:0;top:0;width:100%;background:white;color:black;}
+            #workoutModal .modal-card{max-height:none;border:none;box-shadow:none;}
+            #workoutModal .modal-close,#workoutModal .modal-tab-btns,#workoutModal .print-btn-row{display:none!important;}
+            #workoutModal h2,#workoutModal h3{color:black!important;}
+            #workoutModal td,#workoutModal th{color:black!important;border-color:#ccc!important;}
+            .tab-content{display:block!important;}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="nav-glass fixed top-0 left-0 right-0 z-50" role="navigation" aria-label="Main navigation">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="#hero" class="font-display text-sm font-bold tracking-[0.2em] text-ink-50 hover:text-vermillion transition-colors" style="font-family:'Cinzel Decorative',serif;">CALI</a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#about" class="nav-link text-ink-200 font-body">About</a>
+                <a href="#benefits" class="nav-link text-ink-200 font-body">Benefits</a>
+                <a href="#training" class="nav-link text-ink-200 font-body">Training</a>
+                <a href="#exercises" class="nav-link text-ink-200 font-body">Exercises</a>
+                <a href="#progression" class="nav-link text-ink-200 font-body">Guide</a>
+                <a href="#nutrition" class="nav-link text-ink-200 font-body">Nutrition</a>
+            </div>
+            <button onclick="openModal()" class="hidden sm:flex items-center gap-2 px-5 py-2 border border-vermillion text-vermillion text-xs font-bold tracking-[0.15em] uppercase hover:bg-vermillion hover:text-ink-50 transition-all duration-300 cursor-pointer" style="font-family:'Cinzel Decorative',serif;" aria-label="Download workout plan">
+                <i class="fas fa-download text-[0.65rem]"></i><span>Download</span>
+            </button>
+            <button id="mobileMenuBtn" class="md:hidden text-ink-200 text-xl cursor-pointer" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden border-t border-ink-400 bg-ink-600">
+            <div class="px-6 py-4 flex flex-col gap-4">
+                <a href="#about" class="nav-link text-ink-200 font-body py-2" onclick="closeMobileMenu()">About</a>
+                <a href="#benefits" class="nav-link text-ink-200 font-body py-2" onclick="closeMobileMenu()">Benefits</a>
+                <a href="#training" class="nav-link text-ink-200 font-body py-2" onclick="closeMobileMenu()">Training</a>
+                <a href="#exercises" class="nav-link text-ink-200 font-body py-2" onclick="closeMobileMenu()">Exercises</a>
+                <a href="#progression" class="nav-link text-ink-200 font-body py-2" onclick="closeMobileMenu()">Guide</a>
+                <a href="#nutrition" class="nav-link text-ink-200 font-body py-2" onclick="closeMobileMenu()">Nutrition</a>
+                <button onclick="openModal();closeMobileMenu();" class="flex items-center gap-2 px-5 py-2 border border-vermillion text-vermillion text-xs font-bold tracking-[0.15em] uppercase mt-2 cursor-pointer" style="font-family:'Cinzel Decorative',serif;"><i class="fas fa-download text-[0.65rem]"></i> Download Plan</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section">
+        <div class="hero-ink-wash"></div>
+        <canvas id="inkCanvas"></canvas>
+
+        <!-- Vertical Text (left edge) -->
+        <div class="vertical-text hidden lg:block fixed left-8 top-1/2 -translate-y-1/2 z-20">
+            Strength &middot; Beauty &middot; Discipline
+        </div>
+
+        <div class="hero-inner relative z-10" style="padding-top:80px;">
+            <!-- Left: Text + CTA -->
+            <div class="hero-text-wrap">
+                <span class="section-label tracking-[0.5em] opacity-0" style="animation:fadeUp 0.8s 0.5s forwards;font-size:0.6rem;">THE WAY OF</span>
+                <h1 class="hero-text" id="heroText" aria-label="Calisthenics"></h1>
+                <p class="hero-subtitle">The Art of Bodyweight Mastery</p>
+                <div class="mt-8 flex items-center gap-5 flex-wrap">
+                    <button class="cta-btn" onclick="openModal()" aria-label="Download workout plan">
+                        <i class="fas fa-arrow-down text-xs"></i><span>Download Workout Plan</span>
+                    </button>
+                </div>
+                <div class="mt-3 text-ink-300 text-sm font-body italic opacity-0" style="animation:fadeUp 1s 3.5s forwards;">
+                    Free PDF &middot; Beginner to Advanced
+                </div>
+            </div>
+
+            <!-- Right: Hanko Seal -->
+            <div class="hanko hidden sm:flex">
+                <span style="font-family:'Cinzel Decorative',serif;font-size:0.55rem;letter-spacing:0.12em;color:var(--accent);line-height:1.5;text-align:center;">
+                    BODY<br>MASTERY
+                </span>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20">
+            <span class="text-ink-300 text-xs tracking-[0.3em] uppercase" style="font-family:'Cinzel Decorative',serif;">Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-28 lg:py-36 relative">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="reveal"><span class="section-label">Introduction</span><h2 class="section-title mt-4">What is Calisthenics?</h2></div>
+            <div class="brush-divider mt-8 mb-12 reveal reveal-delay-1"></div>
+            <div class="grid lg:grid-cols-5 gap-12">
+                <div class="lg:col-span-3 reveal reveal-delay-2">
+                    <p class="section-body">Calisthenics derives its name from two Greek words — <em class="text-ink-50 font-semibold">kálos</em> meaning beauty, and <em class="text-ink-50 font-semibold">sthénos</em> meaning strength. It is a discipline in which you train your entire body using only bodyweight exercises. No machines. No weights. Just you.</p>
+                    <p class="section-body mt-6">You may have seen people performing gravity-defying figures such as the Front Lever and Planche, or dynamic acrobatic skills on the bars like the Muscle Up. The exercises usually involve presses and pulls — push-ups, pull-ups, dips, squats — enhancing your body's strength, endurance, coordination, and flexibility.</p>
+                    <p class="section-body mt-6">What makes Calisthenics truly compelling is how it combines <em class="text-gold">functionality and true bodyweight strength</em> with an aesthetic, shredded physique. Not only will you develop raw muscle power, but also an impressive physical form that reflects genuine capability.</p>
+                </div>
+                <div class="lg:col-span-2 flex flex-col gap-6 reveal reveal-delay-3">
+                    <div class="card"><div class="text-vermillion text-3xl font-display font-bold">2008</div><p class="text-ink-200 text-sm mt-2 font-body">Year Calisthenics gained worldwide recognition through viral videos</p></div>
+                    <div class="card"><div class="text-gold text-3xl font-display font-bold">Zero</div><p class="text-ink-200 text-sm mt-2 font-body">Equipment required to begin your journey — just a floor and a bar</p></div>
+                    <div class="card"><div class="text-ink-50 text-3xl font-display font-bold">Infinite</div><p class="text-ink-200 text-sm mt-2 font-body">Variations of exercises for every level from beginner to elite</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits" class="py-28 lg:py-36 bg-ink-600 relative">
+        <div class="absolute inset-0 opacity-30" style="background:radial-gradient(ellipse at 30% 50%, rgba(191,54,50,0.06), transparent 60%);"></div>
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="text-center reveal"><span class="section-label">Why Train</span><h2 class="section-title mt-4">Why Should You Train Calisthenics?</h2><p class="section-body mt-4 max-w-2xl mx-auto">Even though I do not know you, I can almost surely say — Calisthenics is for you.</p></div>
+            <div class="brush-divider mt-8 mb-14 reveal reveal-delay-1"></div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card reveal reveal-delay-1"><div class="benefit-icon mb-5"><i class="fas fa-dumbbell"></i></div><h3 class="font-display text-lg font-bold text-ink-50 mb-3">No Equipment Needed</h3><p class="text-ink-200 text-base leading-relaxed font-body">Train wherever you like. You only need a bit of floor space and a pull-up bar. Calisthenics frees you from the gym.</p></div>
+                <div class="card reveal reveal-delay-2"><div class="benefit-icon mb-5"><i class="fas fa-layer-group"></i></div><h3 class="font-display text-lg font-bold text-ink-50 mb-3">Different Levels of Exercises</h3><p class="text-ink-200 text-base leading-relaxed font-body">Hundreds of variations exist — from knee-assisted push-ups for beginners to one-arm push-ups for elite athletes. You will always find your challenge.</p></div>
+                <div class="card reveal reveal-delay-3"><div class="benefit-icon mb-5"><i class="fas fa-fire-flame-curved"></i></div><h3 class="font-display text-lg font-bold text-ink-50 mb-3">Weight Loss or Muscle Gain</h3><p class="text-ink-200 text-base leading-relaxed font-body">With the right workout structure and nutrition, Calisthenics can help you lose weight or build serious muscle mass — the choice is yours.</p></div>
+                <div class="card reveal reveal-delay-2"><div class="benefit-icon mb-5"><i class="fas fa-hand-fist"></i></div><h3 class="font-display text-lg font-bold text-ink-50 mb-3">Natural Body Strength</h3><p class="text-ink-200 text-base leading-relaxed font-body">You train using natural movements, developing functional strength. Minor muscle groups, tendons, and joints all strengthen together.</p></div>
+                <div class="card reveal reveal-delay-3"><div class="benefit-icon mb-5"><i class="fas fa-bolt"></i></div><h3 class="font-display text-lg font-bold text-ink-50 mb-3">Advanced Skills</h3><p class="text-ink-200 text-base leading-relaxed font-body">Muscle Ups, Front Levers, Human Flags, Planches — with dedication and proper progression, these skills become achievable milestones.</p></div>
+                <div class="card reveal reveal-delay-4"><div class="benefit-icon mb-5"><i class="fas fa-heart-pulse"></i></div><h3 class="font-display text-lg font-bold text-ink-50 mb-3">Complete Body Transformation</h3><p class="text-ink-200 text-base leading-relaxed font-body">Build confidence, meet inspiring people, and completely change how you look and feel. This is not just training — it is a lifestyle transformation.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Training Methods Section -->
+    <section id="training" class="py-28 lg:py-36 relative">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="reveal"><span class="section-label">Methods</span><h2 class="section-title mt-4">Four Ways of Training</h2><p class="section-body mt-4 max-w-3xl">Different goals require different approaches. Your workout plan should be tailored to how advanced you are and what you want to achieve.</p></div>
+            <div class="brush-divider mt-8 mb-14 reveal reveal-delay-1"></div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="card reveal reveal-delay-1" style="border-left:3px solid var(--accent);"><div class="flex items-center gap-3 mb-4"><span class="font-display text-vermillion text-xs tracking-[0.2em] uppercase font-bold">01</span><h3 class="font-display text-xl font-bold text-ink-50">Hypertrophy Training</h3></div><p class="text-ink-200 leading-relaxed font-body mb-4">Build muscle mass through high-intensity resistance exercises with medium repetitions. Focus on progressive overload — each workout, do more than the last.</p><div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-ink-400"><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">6–12 reps</span><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">3–5 sets</span><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">2–4 min rest</span><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">Caloric surplus</span></div></div>
+                <div class="card reveal reveal-delay-2" style="border-left:3px solid var(--gold);"><div class="flex items-center gap-3 mb-4"><span class="font-display text-gold text-xs tracking-[0.2em] uppercase font-bold">02</span><h3 class="font-display text-xl font-bold text-ink-50">Maximum Strength</h3></div><p class="text-ink-200 leading-relaxed font-body mb-4">Increase raw power through neurological adaptations. Lower reps with heavier resistance — weighted pull-ups, weighted dips, and harder progression variations.</p><div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-ink-400"><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">1–5 reps</span><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">5–10 sets</span><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">3–5 min rest</span><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">Added weight</span></div></div>
+                <div class="card reveal reveal-delay-3" style="border-left:3px solid var(--accent);"><div class="flex items-center gap-3 mb-4"><span class="font-display text-vermillion text-xs tracking-[0.2em] uppercase font-bold">03</span><h3 class="font-display text-xl font-bold text-ink-50">Skills Training</h3></div><p class="text-ink-200 leading-relaxed font-body mb-4">Learn impressive calisthenics skills — isometric holds (Front Lever, Planche) and dynamic moves (Muscle Up). Requires high frequency: 3–4 times per week minimum.</p><div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-ink-400"><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">High frequency</span><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">3–5 min rest</span><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">Progressions</span><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">Grease the groove</span></div></div>
+                <div class="card reveal reveal-delay-4" style="border-left:3px solid var(--gold);"><div class="flex items-center gap-3 mb-4"><span class="font-display text-gold text-xs tracking-[0.2em] uppercase font-bold">04</span><h3 class="font-display text-xl font-bold text-ink-50">Muscular Endurance</h3></div><p class="text-ink-200 leading-relaxed font-body mb-4">Push your maximum repetition count. High volume, low resistance, minimal rest. Your mind works as hard as your body — push to the limit with perfect form.</p><div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-ink-400"><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">12+ reps (MAX)</span><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">5 cycles</span><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">30 sec rest</span><span class="text-xs text-ink-300 bg-ink-700 px-3 py-1 rounded-sm">Perfect form</span></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Exercises Section -->
+    <section id="exercises" class="py-28 lg:py-36 bg-ink-600 relative">
+        <div class="absolute inset-0 opacity-20" style="background:radial-gradient(ellipse at 70% 30%, rgba(196,162,78,0.05), transparent 60%);"></div>
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="reveal"><span class="section-label">Exercise Guide</span><h2 class="section-title mt-4">Building Your Body</h2><p class="section-body mt-4 max-w-3xl">Every muscle group can be developed using bodyweight exercises. Here are the most effective movements for each body part.</p></div>
+            <div class="brush-divider mt-8 mb-10 reveal reveal-delay-1"></div>
+            <div class="tab-scroll reveal reveal-delay-2">
+                <div class="flex gap-2 pb-2 min-w-max" id="exerciseTabs" role="tablist">
+                    <button class="tab-btn active" onclick="switchTab('chest')" role="tab" aria-selected="true">Chest</button>
+                    <button class="tab-btn" onclick="switchTab('back')" role="tab" aria-selected="false">Back</button>
+                    <button class="tab-btn" onclick="switchTab('shoulders')" role="tab" aria-selected="false">Shoulders</button>
+                    <button class="tab-btn" onclick="switchTab('triceps')" role="tab" aria-selected="false">Triceps</button>
+                    <button class="tab-btn" onclick="switchTab('biceps')" role="tab" aria-selected="false">Biceps</button>
+                    <button class="tab-btn" onclick="switchTab('core')" role="tab" aria-selected="false">Core</button>
+                    <button class="tab-btn" onclick="switchTab('legs')" role="tab" aria-selected="false">Legs</button>
+                </div>
+            </div>
+            <div class="mt-8">
+                <div class="tab-content active" id="tab-chest" role="tabpanel"><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Chest Dips</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Bend forward with torso and legs. Keep elbows close to body, head neutral. Few exercises activate chest as much as this one.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">PRIMARY: CHEST</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Wide Push-Ups</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Place hands wider than shoulder distance. Body straight, core squeezed. The wider the hands, the more chest activation.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">PRIMARY: CHEST</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Incline & Decline Push-Ups</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Feet elevated targets upper chest. Hands elevated targets lower chest. Keep body straight and core engaged throughout.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">UPPER & LOWER CHEST</div></div></div></div>
+                <div class="tab-content" id="tab-back" role="tabpanel"><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Pull-Ups</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Overhand grip, active hang with shoulders retracted. Wide grip emphasises lats, close grip targets lower lats. No kipping.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">WIDE / NEUTRAL / CLOSE</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Australian Pull-Ups</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Inverted row with body straight below a bar. Ideal for building strength before full pull-ups. Experiment with different grips.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">FOUNDATION BUILDER</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Archery Pull-Ups</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Keep one arm completely straight, pull yourself to the side of the working arm. Requires solid foundation.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">ADVANCED</div></div></div></div>
+                <div class="tab-content" id="tab-shoulders" role="tabpanel"><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Handstand Push-Ups</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Against the wall, body straight. Touch floor with nose, fully extend arms. Front deltoid focus. Build up with pike push-ups.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">FRONT DELTOIDS</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Bodyweight Face Pulls</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Find a waist-high bar, hold like an Australian pull-up. Pull up to face level. Bodyweight equivalent of the classic face pull.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">REAR DELTOIDS</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Pseudo Planche Push-Ups</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Lean forward from planche position, elbows close to body. Great for overall shoulder development.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">GENERAL DELTOIDS</div></div></div></div>
+                <div class="tab-content" id="tab-triceps" role="tabpanel"><div class="grid sm:grid-cols-2 gap-5"><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Straight Bar Dips</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Dip on a single straight bar. Lean slightly forward, arms close to body. Prerequisite for Muscle Up.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">GENERAL TRICEPS</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Skull Crushers</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Grab a waist-high bar with pull-up grip. Bend elbows until head touches bar, extend back. Targets the long head.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">LONG HEAD</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Bench Dips</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Hands on a bench behind you, legs extended. Elbows close to body. Elevate legs for more challenge.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">MEDIAL HEAD</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Diamond Push-Ups</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Diamond shape with fingers, elbows close to body. Engages triceps heavily. Go on knees if too challenging.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">LATERAL HEAD</div></div></div></div>
+                <div class="tab-content" id="tab-biceps" role="tabpanel"><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Chin-Ups</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Palms facing towards you. Think of it as a bicep curl with your entire bodyweight. No momentum.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">COMPOUND BICEPS</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Bar Curls</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Under a waist-high bar, chin-up grip. Focus on bicep curl movement — keep elbows in place.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">ISOLATION</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Behind-the-Bar Chin-Ups</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Bar behind you, facing ground. More difficult but isolates biceps intensely.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">ADVANCED ISOLATION</div></div></div></div>
+                <div class="tab-content" id="tab-core" role="tabpanel"><div class="grid sm:grid-cols-2 gap-5"><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Toes to Bar</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Hang in hollow body, raise legs until feet touch bar. Go past 90 degrees for maximum ab engagement.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">LOWER ABS</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Windshield Wipers</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Pull back up parallel to ground, rotate torso so legs go parallel on each side. Great for obliques.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">OBLIQUES</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Plank</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Elbows on ground, hollow body position. Compound core stabilizer. Move elbows further to increase difficulty.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">CORE STABILIZER</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">L-Sit</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">On dip bars, lock elbows, shoulders down, legs straight. Builds core, shoulder, and tricep strength.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">COMPOUND CORE</div></div></div></div>
+                <div class="tab-content" id="tab-legs" role="tabpanel"><div class="grid sm:grid-cols-2 gap-5"><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Squats</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Heels shoulder-width, feet 30 degrees out. Full range past parallel. Add weight for muscle mass.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">FOUNDATION</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Calf Raises</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Toes on elevated surface, raise and lower heels. Split: 6-12 weighted, 15-20 lighter reps.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">CALVES</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Lunges</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Step forward, lower hips until 90 degrees. Add weight or try jumping lunges for intensity.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">QUADS & GLUTES</div></div><div class="exercise-card"><div class="flex items-center justify-between mb-3"><h4 class="font-display text-base font-bold text-ink-50">Horizontal & Vertical Jumps</h4><div class="flex gap-1"><span class="difficulty-dot filled"></span><span class="difficulty-dot filled"></span><span class="difficulty-dot empty"></span></div></div><p class="text-ink-300 text-sm leading-relaxed font-body">Jump as high or far as possible. Builds explosiveness and coordination. Always warm up first.</p><div class="mt-3 text-xs text-vermillion font-display tracking-wider">EXPLOSIVE POWER</div></div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Beginner to Advanced Progression -->
+    <section id="progression" class="py-28 lg:py-36 relative">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center reveal"><span class="section-label">Your Path</span><h2 class="section-title mt-4">Beginner to Advanced Guide</h2><p class="section-body mt-4 max-w-2xl mx-auto">Every master was once a beginner. Here is the roadmap from your first push-up to elite-level skills.</p></div>
+            <div class="brush-divider mt-8 mb-14 reveal reveal-delay-1"></div>
+            <div class="space-y-10">
+                <div class="progression-step reveal reveal-delay-1"><div class="step-number">I</div><div class="card"><div class="flex flex-wrap items-center gap-3 mb-4"><h3 class="font-display text-xl font-bold text-ink-50">Foundation Phase</h3><span class="text-xs bg-ink-400 text-ink-100 px-3 py-1 rounded-sm font-display tracking-wider">BEGINNER</span></div><p class="text-ink-200 leading-relaxed font-body mb-5">Focus on building a solid base of strength and learning proper form. Train Full Body 3 times per week.</p><div class="grid sm:grid-cols-2 gap-4"><div><div class="text-xs text-vermillion font-display tracking-wider mb-2">PUSH EXERCISES</div><ul class="text-ink-300 text-sm font-body space-y-1"><li>&bull; Knee Push-Ups &rarr; Regular Push-Ups</li><li>&bull; Bench Dips &rarr; Assisted Dips</li><li>&bull; Pike Push-Ups (for shoulders)</li></ul></div><div><div class="text-xs text-vermillion font-display tracking-wider mb-2">PULL EXERCISES</div><ul class="text-ink-300 text-sm font-body space-y-1"><li>&bull; Australian Pull-Ups</li><li>&bull; Negative Pull-Ups</li><li>&bull; Resistance Band Pull-Ups</li></ul></div><div><div class="text-xs text-vermillion font-display tracking-wider mb-2">CORE & LEGS</div><ul class="text-ink-300 text-sm font-body space-y-1"><li>&bull; Plank (30sec &rarr; 60sec)</li><li>&bull; Knee Leg Raises</li><li>&bull; Bodyweight Squats (3x15)</li></ul></div><div><div class="text-xs text-vermillion font-display tracking-wider mb-2">GOAL</div><ul class="text-ink-300 text-sm font-body space-y-1"><li>&bull; 15+ Regular Push-Ups</li><li>&bull; 5+ Strict Pull-Ups</li><li>&bull; 20+ Squats</li></ul></div></div></div></div>
+                <div class="progression-step reveal reveal-delay-2"><div class="step-number">II</div><div class="card"><div class="flex flex-wrap items-center gap-3 mb-4"><h3 class="font-display text-xl font-bold text-ink-50">Development Phase</h3><span class="text-xs bg-gold text-ink-700 px-3 py-1 rounded-sm font-display tracking-wider">INTERMEDIATE</span></div><p class="text-ink-200 leading-relaxed font-body mb-5">Progress to harder variations and begin skill training. Train 4–5 times per week.</p><div class="grid sm:grid-cols-2 gap-4"><div><div class="text-xs text-vermillion font-display tracking-wider mb-2">ADVANCED PUSH</div><ul class="text-ink-300 text-sm font-body space-y-1"><li>&bull; Decline & Wide Push-Ups</li><li>&bull; Chest Dips, Straight Bar Dips</li><li>&bull; Pseudo Planche Push-Ups</li></ul></div><div><div class="text-xs text-vermillion font-display tracking-wider mb-2">ADVANCED PULL</div><ul class="text-ink-300 text-sm font-body space-y-1"><li>&bull; Chin-Ups, L-Sit Pull-Ups</li><li>&bull; Weighted Pull-Ups (5-10kg)</li><li>&bull; Archer Pull-Ups</li></ul></div><div><div class="text-xs text-vermillion font-display tracking-wider mb-2">SKILLS BEGIN</div><ul class="text-ink-300 text-sm font-body space-y-1"><li>&bull; Muscle Up Progressions</li><li>&bull; Handstand Practice</li><li>&bull; Back Lever Tuck Holds</li></ul></div><div><div class="text-xs text-vermillion font-display tracking-wider mb-2">GOAL</div><ul class="text-ink-300 text-sm font-body space-y-1"><li>&bull; Clean Muscle Up</li><li>&bull; 30s+ Handstand</li><li>&bull; 15+ Pull-Ups</li></ul></div></div></div></div>
+                <div class="progression-step reveal reveal-delay-3"><div class="step-number">III</div><div class="card"><div class="flex flex-wrap items-center gap-3 mb-4"><h3 class="font-display text-xl font-bold text-ink-50">Mastery Phase</h3><span class="text-xs bg-vermillion text-ink-50 px-3 py-1 rounded-sm font-display tracking-wider">ADVANCED</span></div><p class="text-ink-200 leading-relaxed font-body mb-5">Focus on elite skills, maximum strength, and weighted training. Train 5–6 times per week.</p><div class="grid sm:grid-cols-2 gap-4"><div><div class="text-xs text-vermillion font-display tracking-wider mb-2">ELITE PUSH</div><ul class="text-ink-300 text-sm font-body space-y-1"><li>&bull; Planche Lean &rarr; Planche</li><li>&bull; 90 Degree Push-Ups</li><li>&bull; Handstand Push-Ups (weighted)</li></ul></div><div><div class="text-xs text-vermillion font-display tracking-wider mb-2">ELITE PULL</div><ul class="text-ink-300 text-sm font-body space-y-1"><li>&bull; Front Lever Progressions</li><li>&bull; Weighted Pull-Ups (20kg+)</li><li>&bull; One-Arm Pull-Up Prep</li></ul></div><div><div class="text-xs text-vermillion font-display tracking-wider mb-2">SKILL MASTERY</div><ul class="text-ink-300 text-sm font-body space-y-1"><li>&bull; Full Front Lever</li><li>&bull; Human Flag</li><li>&bull; Full Planche</li></ul></div><div><div class="text-xs text-vermillion font-display tracking-wider mb-2">PRINCIPLES</div><ul class="text-ink-300 text-sm font-body space-y-1"><li>&bull; Grease the groove for skills</li><li>&bull; Progressive overload always</li><li>&bull; Recovery and sleep are critical</li></ul></div></div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nutrition Section -->
+    <section id="nutrition" class="py-28 lg:py-36 bg-ink-600 relative">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="reveal"><span class="section-label">Fuel</span><h2 class="section-title mt-4">Nutrition Principles</h2><p class="section-body mt-4 max-w-3xl">If you are working out towards a goal, you should eat accordingly. Here are the fundamental principles that actually matter.</p></div>
+            <div class="brush-divider mt-8 mb-14 reveal reveal-delay-1"></div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card reveal reveal-delay-1" style="border-top:3px solid var(--accent);"><div class="flex items-center gap-3 mb-5"><i class="fas fa-arrow-trend-up text-vermillion text-lg"></i><h3 class="font-display text-lg font-bold text-ink-50">Gain Muscle Mass</h3></div><div class="bg-ink-700 rounded p-4 mb-4 font-display text-center"><span class="text-ink-50 text-lg tracking-wider">Calories In</span><span class="text-vermillion text-xl mx-3">&gt;</span><span class="text-ink-50 text-lg tracking-wider">Calories Out</span></div><p class="text-ink-200 leading-relaxed font-body mb-4">Add 200–500 kcal to your daily maintenance. An average active male needs around 2500–3300 kcal.</p><div class="text-ink-300 text-sm font-body bg-ink-700 rounded p-3"><strong class="text-ink-50">Example:</strong> 3000 kcal + 400 kcal = <span class="text-gold">3400 kcal daily</span></div><p class="text-ink-300 text-sm font-body mt-4 italic">Struggling to gain? Go 70% clean, 30% flexible. Some calorie-dense food helps.</p></div>
+                <div class="card reveal reveal-delay-2" style="border-top:3px solid var(--gold);"><div class="flex items-center gap-3 mb-5"><i class="fas fa-arrow-trend-down text-gold text-lg"></i><h3 class="font-display text-lg font-bold text-ink-50">Lose Body Fat</h3></div><div class="bg-ink-700 rounded p-4 mb-4 font-display text-center"><span class="text-ink-50 text-lg tracking-wider">Calories In</span><span class="text-gold text-xl mx-3">&lt;</span><span class="text-ink-50 text-lg tracking-wider">Calories Out</span></div><p class="text-ink-200 leading-relaxed font-body mb-4">Reduce 200–500 kcal from maintenance. Slow, consistent fat loss is sustainable fat loss.</p><div class="text-ink-300 text-sm font-body bg-ink-700 rounded p-3"><strong class="text-ink-50">Example:</strong> 2500 kcal - 400 kcal = <span class="text-gold">2100 kcal daily</span></div><p class="text-ink-300 text-sm font-body mt-4 italic">Quality food keeps you full longer, making the deficit manageable.</p></div>
+            </div>
+            <div class="card mt-8 reveal reveal-delay-3"><h3 class="font-display text-lg font-bold text-ink-50 mb-4">Food Quality and Water</h3><p class="text-ink-200 leading-relaxed font-body">While calories dictate weight change, food quality affects how you feel. Quality food provides more volume per calorie. For those struggling to gain, some flexible eating is actually advisable — it easily delivers required calories and helps with adherence. Vitamins and micronutrients can be supplemented. Above all: <em class="text-ink-50">consistency beats perfection.</em></p></div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-28 lg:py-36 relative overflow-hidden">
+        <div class="absolute inset-0" style="background:radial-gradient(ellipse at center, rgba(191,54,50,0.08), transparent 70%);"></div>
+        <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(to right,transparent,var(--accent),transparent);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-px" style="background:linear-gradient(to right,transparent,var(--accent),transparent);"></div>
+        <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
+            <div class="reveal">
+                <div class="hanko mx-auto mb-8" style="opacity:1;animation:none;transform:rotate(-10deg);"><span style="font-family:'Cinzel Decorative',serif;font-size:0.55rem;letter-spacing:0.15em;color:var(--accent);line-height:1.4;text-align:center;">BEGIN<br>NOW</span></div>
+                <h2 class="section-title">Your Journey Starts Here</h2>
+                <p class="section-body mt-6">Everything you need to begin and progress in Calisthenics — structured workout plans for beginner, intermediate, and advanced levels.</p>
+                <div class="mt-10"><button onclick="openModal()" class="cta-btn" style="opacity:1;animation:none;"><i class="fas fa-download text-xs"></i><span>Download Workout Plan</span></button></div>
+                <p class="text-ink-300 text-sm font-body mt-4 italic">Free PDF download &middot; No email required</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-28 lg:py-36 bg-ink-600">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="text-center reveal"><span class="section-label">Questions</span><h2 class="section-title mt-4">Frequently Asked</h2></div>
+            <div class="brush-divider mt-8 mb-10 reveal reveal-delay-1"></div>
+            <div class="reveal reveal-delay-2">
+                <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false">How do I do more pull-ups?<i class="fas fa-chevron-down"></i></button><div class="faq-answer" aria-hidden="true"><div class="faq-answer-inner">Focus on muscular endurance training. Perform maximum-rep sets of pull-ups and variations with short 30-second rest between sets. Complete 5 cycles. Focus on progressive overload — aim for one more rep each workout.</div></div></div>
+                <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false">How do I do a Muscle Up?<i class="fas fa-chevron-down"></i></button><div class="faq-answer" aria-hidden="true"><div class="faq-answer-inner">The Muscle Up combines a dynamic pull-up and a straight bar dip. Build strength with high pull-ups and explosive pull-ups first. Start with a kipping Muscle Up to learn the transition, then progress to strict. Negative Muscle Ups and resistance band assistance are key progressions.</div></div></div>
+                <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false">Should I work out every day?<i class="fas fa-chevron-down"></i></button><div class="faq-answer" aria-hidden="true"><div class="faq-answer-inner">It depends on your routine and volume. For beginners, 3 Full Body workouts per week is ideal. For advanced athletes, 4–6 days can work if you split muscle groups. Skill training can be done more frequently. Always listen to your body and prioritize recovery.</div></div></div>
+                <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false">I eat a lot but still cannot gain weight. What should I do?<i class="fas fa-chevron-down"></i></button><div class="faq-answer" aria-hidden="true"><div class="faq-answer-inner">Track your calories — most people overestimate intake. Add 200–500 kcal above maintenance. Include calorie-dense foods: nuts, peanut butter, oils, whole milk. Going 70% clean and 30% flexible helps hit calorie targets. Consistency over weeks drives weight gain.</div></div></div>
+                <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false">I barely eat but still cannot lose weight. Why?<i class="fas fa-chevron-down"></i></button><div class="faq-answer" aria-hidden="true"><div class="faq-answer-inner">Very low calorie intake can slow your metabolism. Instead of starving, use a moderate deficit of 200–500 kcal. Eat quality, filling foods. Add physical activity rather than just cutting food. Sustainable fat loss comes from consistency, not extreme restriction.</div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-ink-400">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="font-display text-sm font-bold tracking-[0.2em] text-ink-200" style="font-family:'Cinzel Decorative',serif;">CALI</div>
+            <div class="text-ink-300 text-sm font-body">Charan N</div>
+        </div>
+    </footer>
+
+    <!-- Workout Plan Modal -->
+    <div id="workoutModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Workout Plan">
+        <div class="modal-card">
+            <div class="sticky top-0 bg-ink-600 border-b border-ink-400 px-8 py-5 flex items-center justify-between z-10">
+                <div><h2 class="font-display text-xl font-bold text-ink-50" style="font-family:'Cinzel Decorative',serif;">Workout Plan</h2><p class="text-ink-300 text-sm font-body mt-1">Beginner to Advanced Calisthenics Program</p></div>
+                <button onclick="closeModal()" class="modal-close w-10 h-10 flex items-center justify-center border border-ink-400 text-ink-200 hover:border-vermillion hover:text-vermillion transition-all cursor-pointer" aria-label="Close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-tab-btns px-8 pt-5 flex gap-2 border-b border-ink-400 pb-5">
+                <button class="tab-btn active" onclick="switchModalTab('beginner')">Beginner</button>
+                <button class="tab-btn" onclick="switchModalTab('intermediate')">Intermediate</button>
+                <button class="tab-btn" onclick="switchModalTab('advanced')">Advanced</button>
+            </div>
+            <div class="tab-content active px-8 py-6" id="modal-beginner">
+                <div class="mb-6"><h3 class="font-display text-lg font-bold text-ink-50 mb-1">Full Body — 3 Days Per Week</h3><p class="text-ink-300 text-sm font-body">Rest 1–2 minutes between sets. Focus on perfect form before adding reps.</p></div>
+                <table class="workout-table"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Target</th></tr></thead><tbody><tr><td>Push-Ups</td><td>3</td><td>8–12</td><td>Chest, Triceps</td></tr><tr><td>Australian Pull-Ups</td><td>3</td><td>8–12</td><td>Back, Biceps</td></tr><tr><td>Bodyweight Squats</td><td>3</td><td>15–20</td><td>Legs</td></tr><tr><td>Bench Dips</td><td>3</td><td>6–10</td><td>Triceps</td></tr><tr><td>Knee Leg Raises</td><td>3</td><td>8–12</td><td>Core</td></tr><tr><td>Plank</td><td>3</td><td>30–45 sec</td><td>Core</td></tr><tr><td>Calf Raises</td><td>3</td><td>15–20</td><td>Calves</td></tr></tbody></table>
+                <div class="mt-6 p-4 bg-ink-700 rounded"><div class="text-xs text-vermillion font-display tracking-wider mb-2">WEEKLY SCHEDULE</div><p class="text-ink-200 text-sm font-body">Day 1: Full Body A &bull; Day 2: Rest &bull; Day 3: Full Body B &bull; Day 4: Rest &bull; Day 5: Full Body A &bull; Day 6–7: Rest</p><p class="text-ink-300 text-sm font-body mt-2">Alternate A and B each session. Add 1–2 reps each week. Move to Intermediate at 15+ push-ups and 5+ pull-ups.</p></div>
+            </div>
+            <div class="tab-content px-8 py-6" id="modal-intermediate">
+                <div class="mb-6"><h3 class="font-display text-lg font-bold text-ink-50 mb-1">Split Routine — 4–5 Days Per Week</h3><p class="text-ink-300 text-sm font-body">Rest 2–3 minutes between sets. Include skill training before main workout.</p></div>
+                <div class="mb-6"><div class="text-xs text-vermillion font-display tracking-wider mb-3">DAY 1 — PUSH</div><table class="workout-table"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th></tr></thead><tbody><tr><td>Wide Push-Ups</td><td>4</td><td>12–15</td></tr><tr><td>Chest Dips</td><td>4</td><td>8–12</td></tr><tr><td>Pike Push-Ups</td><td>4</td><td>8–12</td></tr><tr><td>Diamond Push-Ups</td><td>3</td><td>10–15</td></tr><tr><td>Pseudo Planche Push-Ups</td><td>3</td><td>6–10</td></tr></tbody></table></div>
+                <div class="mb-6"><div class="text-xs text-vermillion font-display tracking-wider mb-3">DAY 2 — PULL</div><table class="workout-table"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th></tr></thead><tbody><tr><td>Pull-Ups (Wide Grip)</td><td>4</td><td>8–12</td></tr><tr><td>Chin-Ups</td><td>4</td><td>8–12</td></tr><tr><td>Australian Pull-Ups</td><td>3</td><td>12–15</td></tr><tr><td>Bar Curls</td><td>3</td><td>8–12</td></tr><tr><td>Face Pulls (Bodyweight)</td><td>3</td><td>10–12</td></tr></tbody></table></div>
+                <div class="mb-6"><div class="text-xs text-vermillion font-display tracking-wider mb-3">DAY 3 — LEGS & CORE</div><table class="workout-table"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th></tr></thead><tbody><tr><td>Squats (weighted)</td><td>4</td><td>15–20</td></tr><tr><td>Lunges</td><td>3</td><td>12 each leg</td></tr><tr><td>Calf Raises</td><td>4</td><td>15–20</td></tr><tr><td>Toes to Bar</td><td>3</td><td>8–12</td></tr><tr><td>L-Sit</td><td>3</td><td>10–20 sec</td></tr><tr><td>Plank</td><td>3</td><td>60 sec</td></tr></tbody></table></div>
+                <div class="p-4 bg-ink-700 rounded"><div class="text-xs text-vermillion font-display tracking-wider mb-2">SKILLS (Before Main Workout)</div><p class="text-ink-200 text-sm font-body">Muscle Up: Explosive pull-ups 3x4, Negatives 2x5, Band assisted 3x6<br>Handstand: Wall practice 5x30sec<br>Back Lever: Tuck holds 3x5sec, Negatives 3x5</p></div>
+            </div>
+            <div class="tab-content px-8 py-6" id="modal-advanced">
+                <div class="mb-6"><h3 class="font-display text-lg font-bold text-ink-50 mb-1">Strength & Skills — 5–6 Days Per Week</h3><p class="text-ink-300 text-sm font-body">Rest 3–5 minutes between heavy sets. Combine strength training with high-frequency skill work.</p></div>
+                <div class="mb-6"><div class="text-xs text-vermillion font-display tracking-wider mb-3">DAY 1 — STRENGTH</div><table class="workout-table"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th></tr></thead><tbody><tr><td>Weighted Pull-Ups (Heavy)</td><td>5</td><td>5</td></tr><tr><td>Handstand Push-Ups</td><td>5</td><td>5</td></tr><tr><td>Weighted Dips</td><td>5</td><td>5</td></tr><tr><td>Archery Pull-Ups</td><td>5</td><td>5</td></tr><tr><td>Pistol Squats</td><td>4</td><td>6 each leg</td></tr></tbody></table></div>
+                <div class="mb-6"><div class="text-xs text-vermillion font-display tracking-wider mb-3">DAY 2 — SKILLS</div><table class="workout-table"><thead><tr><th>Skill</th><th>Method</th><th>Sets/Time</th></tr></thead><tbody><tr><td>Front Lever</td><td>Straddle holds + Negatives</td><td>5x5sec + 3x5</td></tr><tr><td>Planche</td><td>Lean + Tuck holds</td><td>5x10sec + 5x5sec</td></tr><tr><td>Muscle Up</td><td>Explosive + Weighted</td><td>5x3 + 3x5</td></tr><tr><td>Human Flag</td><td>Progressions</td><td>5 attempts/side</td></tr></tbody></table></div>
+                <div class="mb-6"><div class="text-xs text-vermillion font-display tracking-wider mb-3">DAY 3 — HYPERTROPHY PUSH</div><table class="workout-table"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th></tr></thead><tbody><tr><td>Chest Dips (Weighted)</td><td>4</td><td>8–10</td></tr><tr><td>Pseudo Planche Push-Ups</td><td>4</td><td>8–12</td></tr><tr><td>Handstand Push-Ups</td><td>4</td><td>8–10</td></tr><tr><td>Straight Bar Dips</td><td>3</td><td>8–10</td></tr></tbody></table></div>
+                <div class="mb-6"><div class="text-xs text-vermillion font-display tracking-wider mb-3">DAY 4 — HYPERTROPHY PULL</div><table class="workout-table"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th></tr></thead><tbody><tr><td>Weighted Chin-Ups</td><td>4</td><td>8–10</td></tr><tr><td>Weighted Pull-Ups</td><td>4</td><td>8–10</td></tr><tr><td>Behind-the-Bar Chin-Ups</td><td>3</td><td>6–10</td></tr><tr><td>Bar Curls (weighted)</td><td>3</td><td>8–12</td></tr></tbody></table></div>
+                <div class="p-4 bg-ink-700 rounded"><div class="text-xs text-vermillion font-display tracking-wider mb-2">KEY PRINCIPLES</div><p class="text-ink-200 text-sm font-body">Add 2.5kg to weighted exercises each session when possible. Grease the groove for skills — train them briefly multiple times per day. Aim for 8+ hours of sleep. Progressive overload is non-negotiable.</p></div>
+            </div>
+            <div class="print-btn-row px-8 py-6 border-t border-ink-400 flex justify-end">
+                <button onclick="printPlan()" class="flex items-center gap-2 px-6 py-3 bg-ink-400 text-ink-50 font-display text-xs tracking-[0.15em] uppercase hover:bg-vermillion transition-all cursor-pointer" style="font-family:'Cinzel Decorative',serif;"><i class="fas fa-print"></i><span>Save as PDF</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        /* Hero Text Animation */
+        (function(){
+            const text='CALISTHENICS';
+            const c=document.getElementById('heroText');
+            text.split('').forEach((ch,i)=>{
+                const s=document.createElement('span');
+                s.className='hero-letter';
+                s.textContent=ch===' '?' ':ch;
+                s.style.animationDelay=(0.8+i*0.08)+'s';
+                c.appendChild(s);
+            });
+        })();
+
+        /* Ink Particle Canvas */
+        (function(){
+            const cv=document.getElementById('inkCanvas'),ctx=cv.getContext('2d');
+            let pts=[],mouse={x:-1e3,y:-1e3},raf;
+            function resize(){cv.width=cv.offsetWidth*devicePixelRatio;cv.height=cv.offsetHeight*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);}
+            class P{
+                constructor(){this.reset();}
+                reset(){
+                    this.x=Math.random()*cv.offsetWidth;this.y=Math.random()*cv.offsetHeight;
+                    this.sz=Math.random()*2.5+0.5;
+                    this.bx=(Math.random()-0.5)*0.25;this.by=(Math.random()-0.5)*0.25;
+                    this.vx=this.bx;this.vy=this.by;
+                    this.op=Math.random()*0.12+0.02;this.red=Math.random()<0.06;
+                    this.ph=Math.random()*Math.PI*2;this.ps=Math.random()*0.01+0.005;
+                }
+                update(){
+                    this.ph+=this.ps;
+                    const dx=mouse.x-this.x,dy=mouse.y-this.y,d=Math.sqrt(dx*dx+dy*dy);
+                    if(d<200&&d>0){const f=(200-d)/200*0.02;this.vx+=dx/d*f;this.vy+=dy/d*f;}
+                    this.vx+=(this.bx-this.vx)*0.02;this.vy+=(this.by-this.vy)*0.02;
+                    this.x+=this.vx;this.y+=this.vy;
+                    if(this.x<-10)this.x=cv.offsetWidth+10;if(this.x>cv.offsetWidth+10)this.x=-10;
+                    if(this.y<-10)this.y=cv.offsetHeight+10;if(this.y>cv.offsetHeight+10)this.y=-10;
+                }
+                draw(){
+                    const pf=0.7+Math.sin(this.ph)*0.3,a=this.op*pf;
+                    ctx.fillStyle=this.red?`rgba(191,54,50,${a})`:`rgba(237,232,219,${a})`;
+                    ctx.beginPath();ctx.arc(this.x,this.y,Math.max(0.1,this.sz*pf),0,Math.PI*2);ctx.fill();
+                }
+            }
+            function init(){resize();pts=[];const n=Math.min(80,Math.floor(cv.offsetWidth*cv.offsetHeight/15000));for(let i=0;i<n;i++)pts.push(new P());}
+            function loop(){ctx.clearRect(0,0,cv.offsetWidth,cv.offsetHeight);pts.forEach(p=>{p.update();p.draw();});raf=requestAnimationFrame(loop);}
+            const hero=document.getElementById('hero');
+            hero.addEventListener('mousemove',e=>{const r=cv.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;});
+            hero.addEventListener('mouseleave',()=>{mouse.x=-1e3;mouse.y=-1e3;});
+            addEventListener('resize',()=>{cancelAnimationFrame(raf);init();loop();});
+            init();loop();
+        })();
+
+        /* Scroll Reveal */
+        (function(){
+            const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('revealed');});},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+            document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+        })();
+
+        /* Active Nav */
+        (function(){
+            const secs=document.querySelectorAll('section[id]'),links=document.querySelectorAll('.nav-link');
+            const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const id=e.target.id;links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+id));}});},{threshold:0.3,rootMargin:'-80px 0px -40% 0px'});
+            secs.forEach(s=>obs.observe(s));
+        })();
+
+        /* Mobile Menu */
+        document.getElementById('mobileMenuBtn').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('hidden'));
+        function closeMobileMenu(){document.getElementById('mobileMenu').classList.add('hidden');}
+
+        /* Exercise Tabs */
+        function switchTab(name){
+            document.querySelectorAll('#exerciseTabs .tab-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
+            document.querySelectorAll('#exercises .tab-content').forEach(t=>t.classList.remove('active'));
+            event.target.classList.add('active');event.target.setAttribute('aria-selected','true');
+            const p=document.getElementById('tab-'+name);if(p)p.classList.add('active');
+        }
+
+        /* Modal Tabs */
+        function switchModalTab(name){
+            const m=document.getElementById('workoutModal');
+            m.querySelectorAll('.modal-tab-btns .tab-btn').forEach(b=>b.classList.remove('active'));
+            m.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+            event.target.classList.add('active');
+            const p=document.getElementById('modal-'+name);if(p)p.classList.add('active');
+        }
+
+        /* Modal */
+        function openModal(){document.getElementById('workoutModal').classList.add('open');document.body.style.overflow='hidden';}
+        function closeModal(){document.getElementById('workoutModal').classList.remove('open');document.body.style.overflow='';}
+        document.getElementById('workoutModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+        document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+        /* Print */
+        function printPlan(){
+            const m=document.getElementById('workoutModal');
+            m.querySelectorAll('.tab-content').forEach(t=>t.classList.add('active'));
+            window.print();
+            setTimeout(()=>{m.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));const ab=m.querySelector('.modal-tab-btns .tab-btn.active');if(ab){const n=ab.textContent.trim().toLowerCase();const p=document.getElementById('modal-'+n);if(p)p.classList.add('active');}},500);
+        }
+
+        /* FAQ */
+        function toggleFaq(btn){
+            const ans=btn.nextElementSibling,open=btn.classList.contains('open');
+            document.querySelectorAll('.faq-question.open').forEach(q=>{q.classList.remove('open');q.setAttribute('aria-expanded','false');q.nextElementSibling.style.maxHeight='0';q.nextElementSibling.setAttribute('aria-hidden','true');});
+            if(!open){btn.classList.add('open');btn.setAttribute('aria-expanded','true');ans.style.maxHeight=ans.scrollHeight+'px';ans.setAttribute('aria-hidden','false');}
+        }
+
+        /* Nav scroll */
+        (function(){
+            const nav=document.querySelector('.nav-glass');
+            addEventListener('scroll',()=>{nav.style.borderBottomColor=scrollY>50?'rgba(45,42,37,0.8)':'rgba(45,42,37,0.5)';nav.style.background=scrollY>50?'rgba(8,8,7,0.95)':'rgba(8,8,7,0.85)';},{passive:true});
+        })();
+    </script>
+</body>
+</html>
